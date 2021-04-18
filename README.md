@@ -7,9 +7,10 @@ This repository contains the code for the CISC 856 Final Project.
 - _testing.py_ contains code used to test the model after it had been trained 
 - _participantdata.py_ contains the code that created the dataset from the [WESAD Dataset](https://archive.ics.uci.edu/ml/datasets/WESAD+%28Wearable+Stress+and+Affect+Detection%29) 
 - the _images_ folder contains relevant images from training and testing, all are labeled accordingly
+- the _sample_ folder contains three checkpoints of weights that can be loaded in, as well as two dataloaders (train and test) 
 
 
-Given the size of the dataset, I couldn't include all of the data used but I've included one batch of images as well as three checkpoints (beginning, midway, end) in case you would like to test anything out. 
+Given the size of the dataset, I couldn't include all of the data used but I've included one batch of images as well as three checkpoints (beginning, midway, end) in case you would like to test anything out. If you do want more data, let me know and I can pass it along. 
 
 The Frechet Inception Distance was calculated using [pytorch_fid](https://github.com/mseitzer/pytorch-fid)
 
