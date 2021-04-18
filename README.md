@@ -14,6 +14,8 @@ Given the size of the dataset, I couldn't include all of the data used but I've 
 
 The Frechet Inception Distance was calculated using [pytorch_fid](https://github.com/mseitzer/pytorch-fid)
 
-The base code structure for the DCGAN architecture came from the [Pytorch DCGAN Tutorial](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html)
+The base code structure for the DCGAN architecture came from the [Pytorch DCGAN Tutorial](https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html).
 
-The code for the custom dataloader was based on this [ntoebook](https://colab.research.google.com/github/trsvchn/stackoverflow-notebooks/blob/master/custom-vision-dataset.ipynb#scrollTo=sYQ269D9QXo2)
+The code for the custom dataloader was based on this [notebook](https://colab.research.google.com/github/trsvchn/stackoverflow-notebooks/blob/master/custom-vision-dataset.ipynb#scrollTo=sYQ269D9QXo2).
+
+Tips on training GANs were taken from [GAN Hacks](https://github.com/soumith/ganhacks). 
