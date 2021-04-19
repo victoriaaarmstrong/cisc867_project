@@ -10,33 +10,33 @@ import torchvision.utils as vutils
 import numpy as np
 import matplotlib.pyplot as plt
 
-from data_set import get_images
+from dataset import get_images
 
 manualSeed = 999
-workers = 6
+workers = 2
 batch_size = 64
 image_size = 64
-nc = 3
-nz = 100
-ngf = 64
-ndf = 64
+nc = 3 ## num channels, RGB
+nz = 100 ## latent vector size
+ngf = 64 ## num generator features
+ndf = 64 ## num discriminator features
 num_epochs = 100
-lr = 0.0002
+lr = 0.0002 ## learning rate
 beta1 = 0.5
 ngpu = 1 #for DL laptop
 wcm = 0.0 #weight mean initialization for convolutional layers
 wbm = 1.0 #weight mean initialization for batch norm layers
 ws = 0.02 #weight stf initilalzation for all layers
 bias = 0 #for weight initialization
-maxR = 1.2
-minR = 0.7
-maxF = 0.3
-minF = 0.0
+maxR = 1.2 ## for label smoothing
+minR = 0.7 ## for label smoothing
+maxF = 0.3 ## for label smoothing
+minF = 0.0 ## for label smoothing
 
 
 def weights_init(m):
   """
-  takes initialized model m and reinitializes all convolutional, convolutional-transpose and batch norm layers
+  Takes initialized model m and reinitializes all convolutional, convolutional-transpose and batch norm layers
   """
   classname = m.__class__.__name__
   if classname.find('Conv') != -1:
@@ -47,6 +47,9 @@ def weights_init(m):
 
 
 class Generator(nn.Module):
+  """
+  Generator for the DCGAN
+  """
   def __init__(self, ngpu):
     super(Generator, self).__init__()
     self.ngpu = ngpu
@@ -95,38 +98,41 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self, ngpu):
-      super(Discriminator, self).__init__()
-      self.ngpu = ngpu
-      self.main = nn.Sequential(
-        nn.Conv2d(nc, ndf, 4, 2, 1, bias=False),
-        nn.LeakyReLU(0.2, inplace=True),
-        # state size. (ndf) x 32 x 32
-        nn.Conv2d(ndf, ndf * 2, 4, 2, 1, bias=False),
-        nn.BatchNorm2d(ndf * 2),
-        nn.LeakyReLU(0.2, inplace=True),
-        # state size. (ndf*2) x 16 x 16
-        nn.Conv2d(ndf * 2, ndf * 4, 4, 2, 1, bias=False),
-        nn.BatchNorm2d(ndf * 4),
-        nn.LeakyReLU(0.2, inplace=True),
-        # state size. (ndf*4) x 8 x 8
-        nn.Conv2d(ndf * 4, ndf * 8, 4, 2, 1, bias=False),
-        nn.BatchNorm2d(ndf * 8),
-        nn.LeakyReLU(0.2, inplace=True),
-        # state size. (ndf*8) x 4 x 4
-        nn.Conv2d(ndf * 8, 1, 4, 1, 0, bias=False),
-        nn.Sigmoid()
-      )
+  """
+  Discriminator for DCGAN
+  """
+  def __init__(self, ngpu):
+    super(Discriminator, self).__init__()
+    self.ngpu = ngpu
+    self.main = nn.Sequential(
+      nn.Conv2d(nc, ndf, 4, 2, 1, bias=False),
+      nn.LeakyReLU(0.2, inplace=True),
+      # state size. (ndf) x 32 x 32
+      nn.Conv2d(ndf, ndf * 2, 4, 2, 1, bias=False),
+      nn.BatchNorm2d(ndf * 2),
+      nn.LeakyReLU(0.2, inplace=True),
+      # state size. (ndf*2) x 16 x 16
+      nn.Conv2d(ndf * 2, ndf * 4, 4, 2, 1, bias=False),
+      nn.BatchNorm2d(ndf * 4),
+      nn.LeakyReLU(0.2, inplace=True),
+      # state size. (ndf*4) x 8 x 8
+      nn.Conv2d(ndf * 4, ndf * 8, 4, 2, 1, bias=False),
+      nn.BatchNorm2d(ndf * 8),
+      nn.LeakyReLU(0.2, inplace=True),
+      # state size. (ndf*8) x 4 x 4
+      nn.Conv2d(ndf * 8, 1, 4, 1, 0, bias=False),
+      nn.Sigmoid()
+    )
 
-    def forward(self, input):
-      return self.main(input)
+  def forward(self, input):
+    return self.main(input)
 
 def train(name):
   device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
 
+  ## Create generator and discriminator and apply initial weights
   netG = Generator(ngpu).to(device)
   netD = Discriminator(ngpu).to(device)
-
   netG.apply(weights_init)
   netD.apply(weights_init)
 
@@ -135,15 +141,19 @@ def train(name):
   print("Net D:")
   print(netD)
 
-  #device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
+  device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
 
+  ## Create the dataloaders as train and test sets
   dataloader_train, dataloader_test = get_images(batch_size, image_size, workers)
 
+  ## Save the dataloaders for later
   torch.save(dataloader_test, './dataloaders/test_')
   torch.save(dataloader_train, './dataloaders/train_')
 
+  ## User binary cross entropy as a loss function
   criterion = nn.BCELoss()
 
+  ## SEt optimizers
   optimizerD = optim.Adam(netD.parameters(), lr=lr, betas=(beta1, 0.999))
   optimizerG = optim.Adam(netG.parameters(), lr=lr, betas=(beta1, 0.999))
 
