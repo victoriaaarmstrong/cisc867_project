@@ -2,7 +2,8 @@
 
 This repository contains the code for the CISC 856 Final Project. 
 
-- _model.py_ contains the generator and discriminator models as well as the training function
+- _report.pdf_ is the final write up for this project
+-  _model.py_ contains the generator and discriminator models as well as the training function
 - _dataset.py_ contains the functions for overwriting the VisionDataset class to make a custom Dataloader that stores two images as pairs (real, sparse)
 - _testing.py_ contains code used to test the model after it had been trained 
 - _participantdata.py_ contains the code that created the dataset from the [WESAD Dataset](https://archive.ics.uci.edu/ml/datasets/WESAD+%28Wearable+Stress+and+Affect+Detection%29) 
