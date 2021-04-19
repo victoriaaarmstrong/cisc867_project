@@ -97,3 +97,4 @@ def get_images(bs, image_size, workers, shuf=True):
     dataloader_test = DataLoader(test_dataset, batch_size=bs, shuffle=shuf, num_workers=workers)
 
     return dataloader_train, dataloader_test
+
